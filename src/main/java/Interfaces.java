@@ -1,4 +1,4 @@
-public class Interfaces {
+/*public class Interfaces {
     // Interfaz para una Pila (LIFO) public interface IPila<T>
     {
         void Push(T item);      // Insertar en la cima     T Pop();                // Extraer de la cima
@@ -18,4 +18,4 @@ public class Interfaces {
         T PeekFrente();               // Consultar el frente sin quitar
         T PeekFinal();                // Consultar el final sin quitar     bool IsEmpty();               // Verifica si está vacía     int Count { get; }            // Cantidad de elementos }
 
-    }
+    }*/

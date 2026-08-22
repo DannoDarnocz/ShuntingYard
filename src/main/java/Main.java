@@ -1,8 +1,17 @@
-public class Main {
-    String expression = "((2+5*12)+5)";
-    char[] chars = expression.toCharArray();
+import tokens.Token;
+import tokens.Tokenizer;
 
-    for(int i=0; i<chars.length();i++){
-        if((int)chars[i]!=null)
+import java.util.ArrayList;
+
+public class Main {
+    public void main() {
+        String expression = "((2+5*12)+5)";
+
+        ArrayList<Token> tokenList = Tokenizer.convertString(expression);
+
+        for(Token token : tokenList){
+            System.out.println(token.getData());
+        }
     }
+
 }

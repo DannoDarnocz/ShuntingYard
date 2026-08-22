@@ -1,4 +1,6 @@
 package tokens;
 
-public class Token {
+public abstract class Token <T> {
+    abstract public int getPriority();
+    abstract public T getData();
 }
