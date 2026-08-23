@@ -14,6 +14,16 @@ public class Tokenizer {
         for(int i=0;i<chars.length;i++) {
             char currentChar = chars[i];
             int constructedNumber = 0;
+            boolean isNegative = false;
+
+            //todo arreglar signos
+
+            // si el actual es un menos y el anterior era tambien un operador (o no habia nada), tomar el menos como el signo
+            if(currentChar=='-'&& tokenizedList.isEmpty()){
+                isNegative=true;
+                continue;
+            }
+
 
             if(Character.isDigit(currentChar)){
                 // es numero pero hay que ver si hay más adelante tambien
@@ -43,6 +53,7 @@ public class Tokenizer {
             }
             else if(validOperators.contains(Character.toString(currentChar))){
                 // es alguna operación válida
+                // ver si antes habia un operador. solo se vale si el actual es un negativo
                 Operator operator = new Operator(currentChar);
                 tokenizedList.add(operator);
             } else {
