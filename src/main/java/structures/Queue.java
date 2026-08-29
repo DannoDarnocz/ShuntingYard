@@ -1,33 +1,37 @@
 package structures;
+import java.util.ArrayList;
+
 
 public class Queue<T> implements IQueue<T> {
+    private ArrayList<T> queueItems = new ArrayList<>();
 
     @Override
     public void enqueue(T item) {
+        queueItems.add(item);
 
     }
 
     @Override
     public T dequeue() {
-        return null;
+        return queueItems.removeFirst();
 
     }
 
     @Override
     public T peek() {
-        return null;
+        return queueItems.getFirst();
 
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return queueItems.isEmpty();
 
     }
 
     @Override
     public int size() {
-        return 0;
+        return queueItems.size();
 
     }
 }
