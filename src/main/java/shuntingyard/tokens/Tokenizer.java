@@ -2,20 +2,19 @@ package shuntingyard.tokens;
 
 
 import java.io.InvalidObjectException;
-import java.lang.Number;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 public class Tokenizer {
     private static final String validOperators = "+*/";
 
-    public static ArrayList<Token>convertString(String str) throws Exception {
+    public static ArrayList<Token> parseTokenList(String str) throws Exception {
         ArrayList<Token> tokenizedList = new ArrayList<>();
         // convertir a un array de caracteres
         char[] chars = str.toCharArray();
 
         boolean nextNumShouldBeNegative = false; // esto lleva registro de si el siguiente número que aparezca debe ser negativo (signo de menos cuando haya un operador antes o sea al inicio)
-        boolean operatorLoaded = false;
+        boolean expectsOperand = false; // indica cuando se acaba de ingresar un operador
+        boolean expectsOperator = false; // cuando es un número o cierre de paréntesis, se espera que lo siguiente sea un operador
         int unclosedParenthesis = 0; // esto para llevar control de que se hayan cerrado todos los parentesis
 
         // recorrer cada caracter
@@ -50,6 +49,14 @@ public class Tokenizer {
 
                 // si tenia un signo de menos antes, pasa a ser que el numero sea negativo
                 NumericalValue numericalValue = new NumericalValue(nextNumShouldBeNegative ? -(number) : number);
+
+                // si lo anterior es otro paréntesis de cierre entonces no hay signo, se asume que es multiplicación
+                // implícita
+                if(expectsOperator){
+                    Operator implicitMultiply = new Operator('*');
+                    tokenizedList.add(implicitMultiply);
+                }
+
                 tokenizedList.add(numericalValue);
 
                 i = x; // avanzar el cursor hasta donde terminó x porque ese donde quedó ya no es dígito
@@ -59,7 +66,10 @@ public class Tokenizer {
                 i-=1;
 
                 // se sabe que no es operador asi que se quita
-                operatorLoaded = false;
+                expectsOperand = false;
+
+                // se espera que lo siguiente sea un operador
+                expectsOperator = true;
 
                 // ya se "gastó" el signo de negativo, quitarlo si es que se usó
                 nextNumShouldBeNegative = false;
@@ -72,15 +82,21 @@ public class Tokenizer {
                     // en este caso otro menos le sigue, entonces no tiene sentido (seria como 2+--3 o --2)
                     throw new InvalidObjectException("Hay dos o más signos de resta consecutivamente. Posición: " + (i+1));
                 }
-                else if(tokenizedList.isEmpty()||operatorLoaded){
+                else if(tokenizedList.isEmpty()||expectsOperand){
                     // si no hay nada antes entonces no queda de otra, es un signo de numero negativo
                     // y si el anterior era un operador entonces tambien no queda de otra mas que sea de negativo
                     nextNumShouldBeNegative = true;
+                    expectsOperand = true;
+                    expectsOperator = false;
                 }else{
                     // si no pasa ninguna condicion es porque es un signo de resta simple
                     Operator operator = new Operator('-');
                     tokenizedList.add(operator);
-                    operatorLoaded = true;
+
+                    // es un operador, asi que se espera que NO sea un operador lo siguiente
+                    expectsOperand = true;
+                    expectsOperator = false;
+
                     nextNumShouldBeNegative = false;
                 }
             }
@@ -100,7 +116,16 @@ public class Tokenizer {
                     // el parentesis de apertura hace que no se pueda poner un operador después
                     // (a menos que sea
                     // un menos de signo de negativo) porque no tiene sentido hacer 2*(/9+1)
-                    operatorLoaded = true;
+                    expectsOperand = true;
+
+                    // si lo anterior es otro paréntesis de cierre o un número entonces no hay signo, se asume que es multiplicación
+                    // implícita
+                    if(expectsOperator){
+                        Operator implicitMultiply = new Operator('*');
+                        tokenizedList.add(implicitMultiply);
+                        expectsOperator = false;
+                    }
+
                     unclosedParenthesis++;
                 }
                 else{
@@ -108,7 +133,8 @@ public class Tokenizer {
                     if(unclosedParenthesis==0) throw new InvalidObjectException("Se cerró un paréntesis cuando no había ninguno abierto. Posición: " + (i+1));
 
                     // si antes tiene un operador no tiene sentido, por ejemplo 2*(9+)
-                    if(operatorLoaded) throw new InvalidObjectException("Hay un operador antes de cerrar un paréntesis, o un paréntesis de apertura inmediatamente antes. Posición: " + (i+1));
+                    if(expectsOperand) throw new InvalidObjectException("Hay un operador antes de cerrar un paréntesis, o un paréntesis de apertura inmediatamente antes. Posición: " + (i+1));
+
                     unclosedParenthesis--;
                 }
 
@@ -118,20 +144,31 @@ public class Tokenizer {
 
             // si es un operador valido (sin contar el menos porque eso se maneja antes)
             else if (validOperators.contains(Character.toString(currentChar))){
-                if(operatorLoaded) throw new InvalidObjectException("Hay dos signos consecutivos de forma inválida. Posición: " + (i+1));
+                if(expectsOperand) throw new InvalidObjectException("Hay dos signos consecutivos de forma inválida. Posición: " + (i+1));
                 if(tokenizedList.isEmpty()) throw new InvalidObjectException("La expresión empieza con un operador.");
 
                 Operator operator = new Operator(currentChar);
-                operatorLoaded = true;
+
+                // espera que lo siguiente sea numero o parentesis de apertura
+                expectsOperand = true;
+                expectsOperator = false;
+
                 tokenizedList.add(operator);
+            }
+            else{
+                // no es ningun valido caracter valido
+                throw new InvalidObjectException("El caracter en la posición " + (i+1) + " no es válido: " + currentChar);
             }
         }
 
         // si se dejó un paréntesis sin cerrar entonces no es valido
-        if(unclosedParenthesis!=0) throw new InvalidObjectException("No se cerraron todos los paréntesis");
+        if(unclosedParenthesis!=0) throw new InvalidObjectException("No se cerraron todos los paréntesis.");
 
         // si la lista está vacía totalmente entonces no hay nada válido para agregar
-        if(tokenizedList.isEmpty()) throw new InvalidObjectException("La expresión dada no es válida");
+        if(tokenizedList.isEmpty()) throw new InvalidObjectException("La expresión dada no es válida.");
+
+        // si el último caracter es operador
+        if(expectsOperand) throw new InvalidObjectException("El último caracter es un operador.");
 
         // la lista está íntegra, sin errores
         return tokenizedList;

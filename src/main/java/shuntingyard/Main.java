@@ -5,7 +5,6 @@ import shuntingyard.tokens.Tokenizer;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
     public void main() {
@@ -16,7 +15,7 @@ public class Main {
             String expression = scanner.nextLine(); // Reads a full line of text
 
             try{
-                ArrayList<Token> tokenList = Tokenizer.convertString(expression);
+                ArrayList<Token> tokenList = Tokenizer.parseTokenList(expression);
 
                 System.out.println("Expresión digitada: ");
                 for(Token token : tokenList){
