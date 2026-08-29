@@ -1,4 +1,4 @@
-package structures;
+package shuntingyard.structures;
 
 public interface IQueue<T> {
     void enqueue(T item);     // Insertar al final

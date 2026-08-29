@@ -1,10 +1,10 @@
-package tokens;
+package shuntingyard.tokens;
 
-public class Number extends Token<Long> {
+public class NumericalValue extends Token<Long> {
     private long number;
 
 
-    public Number(long number) {
+    public NumericalValue(long number) {
         this.number = number;
     };
 
@@ -17,4 +17,7 @@ public class Number extends Token<Long> {
     public Long getData(){
         return number;
     }
+
+    @Override
+    public String toString() { return Long.toString(number);}
 }

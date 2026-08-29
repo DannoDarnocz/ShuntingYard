@@ -1,4 +1,4 @@
-package tokens;
+package shuntingyard.tokens;
 
 public class Operator extends Token<Character> {
     private char character;
@@ -7,9 +7,13 @@ public class Operator extends Token<Character> {
 
     @Override
     public int getPriority(){
-        return 2;
+        // menos y mas tienen menor prioridad
+        return (character=='+'||character=='-'? 3:2);
     }
 
     @Override
     public Character getData() { return character; }
+
+    @Override
+    public String toString() { return Character.toString(character);}
 }

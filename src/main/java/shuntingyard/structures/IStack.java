@@ -1,4 +1,4 @@
-package structures;
+package shuntingyard.structures;
 
 public interface IStack<T> {
     void push(T item);      // Insertar en la cima

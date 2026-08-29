@@ -1,5 +1,6 @@
 //hola
-package structures;
+package shuntingyard.structures;
+
 import java.util.ArrayList;
 
 public class Stack<T> implements IStack<T> {

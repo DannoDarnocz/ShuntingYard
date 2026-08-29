@@ -1,4 +1,4 @@
-package structures;
+package shuntingyard.structures;
 
 public interface IDeque<T> {
     void enqueueFront(T item);    // Insertar por el frente

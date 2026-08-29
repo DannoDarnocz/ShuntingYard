@@ -1,4 +1,4 @@
-package tokens;
+package shuntingyard.tokens;
 
 public class Parenthesis extends Token<Boolean> {
 
@@ -16,4 +16,7 @@ public class Parenthesis extends Token<Boolean> {
     public Boolean getData() {
         return isOpen;
     }
+
+    @Override
+    public String toString() { return (isOpen?"(":")");}
 }
