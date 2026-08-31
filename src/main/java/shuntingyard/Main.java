@@ -59,6 +59,42 @@ public class Main {
                     }
                 }
 
+                // Ingresar la cola a la pila para obtener resultado
+
+                IStack<Token> resultStack = new Stack<>();
+                NumericalValue operand1 = null;
+                NumericalValue operand2 = null;
+
+                while(!outputQueue.isEmpty()){
+                    // sacar de la cola
+                    currentToken = outputQueue.dequeue();
+
+                    // si es numero, se mete
+                    if(currentToken instanceof NumericalValue){
+                        resultStack.push(currentToken);
+                    }
+                    else{
+                        // sacar ultimos dos numeros (asumiendo que el proceso anterior debería de estar bien hecho
+                        // y efectivamente deberian haber al menos dos numeros en la pila
+                        operand1 = (NumericalValue)resultStack.pop();
+                        operand2 = (NumericalValue)resultStack.pop();
+
+                        // se obtiene resultado de la operación
+                        Operator currentOperator = (Operator)currentToken;
+                        double result = currentOperator.operate(operand1.getData(),operand2.getData());
+
+                        // se hace nuevo token con el resultado
+                        Token resultToken = new NumericalValue(result);
+
+                        // se mete ese resultado en la pila
+                        resultStack.push(resultToken);
+                    }
+                }
+
+                // el resultado queda como único elemento en la pila
+                NumericalValue result = (NumericalValue)resultStack.peek();
+                System.out.println(result.getData());
+
 
                 System.out.println("\n"+tokenList.toString()+"\n");
 
