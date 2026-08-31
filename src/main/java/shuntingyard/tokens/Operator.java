@@ -14,6 +14,16 @@ public class Operator extends Token<Character> {
     @Override
     public Character getData() { return character; }
 
+    public Double operate(double a, double b){
+        return switch (character) {
+            case '+' -> a + b;
+            case '-' -> a - b;
+            case '/' -> a / b;
+            case '*' -> a * b;
+            default -> null;
+        };
+    }
+
     @Override
     public String toString() { return Character.toString(character);}
 }
