@@ -1,14 +1,17 @@
 package shuntingyard.tokens;
 
 
+import shuntingyard.structures.IQueue;
+import shuntingyard.structures.Queue;
+
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
 
 public class Tokenizer {
     private static final String validOperators = "+*/";
 
-    public static ArrayList<Token> parseTokenList(String str) throws Exception {
-        ArrayList<Token> tokenizedList = new ArrayList<>();
+    public static IQueue<Token> parseTokenList(String str) throws Exception {
+        IQueue<Token> tokenizedList = new Queue<Token>();
         // convertir a un array de caracteres
         char[] chars = str.toCharArray();
 
@@ -54,10 +57,10 @@ public class Tokenizer {
                 // implícita
                 if(expectsOperator){
                     Operator implicitMultiply = new Operator('*');
-                    tokenizedList.add(implicitMultiply);
+                    tokenizedList.enqueue(implicitMultiply);
                 }
 
-                tokenizedList.add(numericalValue);
+                tokenizedList.enqueue(numericalValue);
 
                 i = x; // avanzar el cursor hasta donde terminó x porque ese donde quedó ya no es dígito
 
@@ -91,7 +94,7 @@ public class Tokenizer {
                 }else{
                     // si no pasa ninguna condicion es porque es un signo de resta simple
                     Operator operator = new Operator('-');
-                    tokenizedList.add(operator);
+                    tokenizedList.enqueue(operator);
 
                     // es un operador, asi que se espera que NO sea un operador lo siguiente
                     expectsOperand = true;
@@ -122,7 +125,7 @@ public class Tokenizer {
                     // implícita
                     if(expectsOperator){
                         Operator implicitMultiply = new Operator('*');
-                        tokenizedList.add(implicitMultiply);
+                        tokenizedList.enqueue(implicitMultiply);
                         expectsOperator = false;
                     }
 
@@ -139,7 +142,7 @@ public class Tokenizer {
                 }
 
                 // agregar parentesis si no hay problemas
-                tokenizedList.add(parenthesis);
+                tokenizedList.enqueue(parenthesis);
             }
 
             // si es un operador valido (sin contar el menos porque eso se maneja antes)
@@ -153,7 +156,7 @@ public class Tokenizer {
                 expectsOperand = true;
                 expectsOperator = false;
 
-                tokenizedList.add(operator);
+                tokenizedList.enqueue(operator);
             }
             else{
                 // no es ningun valido caracter valido
