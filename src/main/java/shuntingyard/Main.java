@@ -1,7 +1,10 @@
 package shuntingyard;
 
-import shuntingyard.tokens.Token;
-import shuntingyard.tokens.Tokenizer;
+import shuntingyard.structures.IQueue;
+import shuntingyard.structures.IStack;
+import shuntingyard.structures.Queue;
+import shuntingyard.structures.Stack;
+import shuntingyard.tokens.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -15,14 +18,52 @@ public class Main {
             String expression = scanner.nextLine(); // Reads a full line of text
 
             try{
-                ArrayList<Token> tokenList = Tokenizer.parseTokenList(expression);
+                IQueue<Token> tokenList = Tokenizer.parseTokenList(expression);
+
+                // para hacer el proceso va aca
+                IQueue<Token> outputQueue = new Queue<>();
+                IStack<Token> stack = new Stack<>();
 
                 System.out.println("Expresión digitada: ");
-                for(Token token : tokenList){
-                    System.out.print(token.toString());
+
+                Token currentToken = null;
+
+                // ir sacando de la cola hasta que ya no haya más tokens
+                while(!tokenList.isEmpty()){
+                    currentToken = tokenList.dequeue(); // obtener el primero y quitarlo de la cola para procesarlo
+                    System.out.print(currentToken.toString());
+
+                    // si es número (operando) agregar a la cola de salida
+                    if(currentToken instanceof NumericalValue){
+                        outputQueue.enqueue(currentToken);
+                    }
+                    else if(currentToken instanceof Operator){
+
+                    }
+                    else if(currentToken instanceof Parenthesis){
+                        Parenthesis currentParenthesis = (Parenthesis)currentToken;
+                        // true si es parentesis abierto
+                        if(currentParenthesis.getData()){
+                            // es parentesis abierto, simplemente se mete en la pila y ya
+                            stack.push(currentToken);
+                        }
+                        else{
+                            // es parentesis de cierre, sacar hasta encontrar parentesis de apertura
+                            do{
+                                Token poppedToken = stack.pop();
+                                if(poppedToken instanceof Parenthesis){
+                                    outputQueue.enqueue(poppedToken);
+                                }
+                            } while (true);
+                        }
+                    }
                 }
 
+
                 System.out.println("\n"+tokenList.toString()+"\n");
+
+                // convertir
+
 
                 // hacer operacion con stack y queue
             } catch (Exception e) {
