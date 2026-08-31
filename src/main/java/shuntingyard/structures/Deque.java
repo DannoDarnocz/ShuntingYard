@@ -1,5 +1,4 @@
 package shuntingyard.structures;
-
 import java.util.ArrayList;
 
 
