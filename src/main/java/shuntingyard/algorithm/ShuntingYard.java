@@ -21,7 +21,9 @@ public class ShuntingYard {
         // ir sacando de la cola hasta que ya no haya más tokens
         while (!tokenList.isEmpty()) {
             Token currentToken = tokenList.dequeue(); // obtener el primero y quitarlo de la cola para procesarlo
-            System.out.print(currentToken.toString());
+           // System.out.print(currentToken.toString());
+            System.out.println("Se extrajo "+currentToken+" de la cola");
+
 
             // si es número (operando) agregar a la cola de salida
             if (currentToken instanceof NumericalValue) {
@@ -35,31 +37,43 @@ public class ShuntingYard {
 
         // vaciar lo que quede en la pila al final
         while (!stack.isEmpty()) {
-            outputQueue.enqueue(stack.pop());
-        }
+            Token poppedToken = stack.pop();
+            System.out.println("Se extrajo "+poppedToken+" de la pila");
+            outputQueue.enqueue(poppedToken);
+            System.out.println("Se inserto "+poppedToken+" en la expresion");        }
 
         return outputQueue;
     }
 
+//cola(de salida)== expresion postfija
     private static void handleNumber(Token currentToken, IQueue<Token> outputQueue) {
         outputQueue.enqueue(currentToken);
+        System.out.println("Se inserto el numero "+currentToken+" en la expresion");//cola
     }
 
     private static void handleOperator(Token currentToken, IStack<Token> stack, IQueue<Token> outputQueue) {
         if (stack.isEmpty()) {
             stack.push(currentToken);
+            System.out.println("Se inserto el operador "+currentToken+" en la pila");
+
+
             return;
         }
 
         Token topOperator = stack.peek();//guarda el operador de la cima para comparar
         while (topOperator.getPriority() >= currentToken.getPriority() && !stack.isEmpty()) {//recorre comparando y mientras no este vacia
-            Token operator = stack.pop();//extrae operador de la cima
-            outputQueue.enqueue(operator);//lo pone en la cola
+            Token operator = stack.pop();//extrae operador
+            System.out.println("Se extrajo el operador "+operator+" de la pila");
+            outputQueue.enqueue(operator);// pone el operador en la cola
+            System.out.println("Se inserto el operador "+operator+" en la expresion");//cola
+
+
             if (!stack.isEmpty()) {
                 topOperator = stack.peek();//guarda el nuevo operador de la cima mientras no este vacia
             }
         }
         stack.push(currentToken);
+        System.out.println("Se inserto el operador "+currentToken+" en la pila");
     }
 
     private static void handleParenthesis(Token currentToken, IStack<Token> stack, IQueue<Token> outputQueue) {
@@ -68,14 +82,18 @@ public class ShuntingYard {
         if (currentParenthesis.getData()) {
             // es parentesis abierto, simplemente se mete en la pila y ya
             stack.push(currentToken);
+            System.out.println("Se inserto el parentesis "+currentParenthesis+" a la pila");
         } else {
             // es parentesis de cierre, sacar hasta encontrar parentesis de apertura
             while (!stack.isEmpty()) {
                 Token poppedToken = stack.pop();
+                System.out.println("Se extrajo "+poppedToken+" de la pila");
+
                 if (poppedToken instanceof Parenthesis) {
                     break;
                 }
                 outputQueue.enqueue(poppedToken);
+                System.out.println("Se inserto el operador"+poppedToken+" a la expresion");
             }
         }
     }
@@ -86,14 +104,18 @@ public class ShuntingYard {
         while (!outputQueue.isEmpty()) {
             // sacar de la cola
             Token currentToken = outputQueue.dequeue();
+            System.out.println("Se extrajo "+currentToken+" de la expresion");
 
             // si es numero, se mete
             if (currentToken instanceof NumericalValue) {
                 resultStack.push(currentToken);
+                System.out.println("Se inserto el numero "+currentToken+" en la pila resultante");
             } else {
                 // sacar ultimos dos numeros (asumiendo que el proceso anterior debería de estar bien hecho
                 // y efectivamente deberian haber al menos dos numeros en la pila
-                resultStack.push(applyOperator(currentToken, resultStack));
+                Token resultToken = applyOperator(currentToken,resultStack);
+                resultStack.push(resultToken);
+                System.out.println("Se inserto el resultado "+resultToken+" en la pila");
             }
         }
 
@@ -104,7 +126,10 @@ public class ShuntingYard {
 
     private static Token applyOperator(Token currentToken, IStack<Token> resultStack) {
         NumericalValue operand1 = (NumericalValue) resultStack.pop();
+        System.out.println("Se extrajo el numero "+operand1+" de la pila resultante");
         NumericalValue operand2 = (NumericalValue) resultStack.pop();
+        System.out.println("Se extrajo el numero "+operand2+" de la pila resultante");
+
 
         // se obtiene resultado de la operación
         Operator currentOperator = (Operator) currentToken;

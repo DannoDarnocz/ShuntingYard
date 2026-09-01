@@ -8,7 +8,8 @@ public class Operator extends Token<Character> {
     @Override
     public int getPriority(){
         // menos y mas tienen menor prioridad
-        return (character=='+'||character=='-'? 3:2);
+        //cambien 2 y 3 de posicion para que * y / tomaran el 3 como mayor precencia
+        return (character=='+'||character=='-'? 2:3);
     }
 
     public Double operate(double a, double b){
