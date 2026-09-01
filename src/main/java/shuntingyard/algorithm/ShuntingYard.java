@@ -10,6 +10,10 @@ public class ShuntingYard {
 
     public static double process(String expression) throws Exception {
         IQueue<Token> postfix = toPostfix(expression);
+        // mostrar
+        System.out.println("\nEXPRESIÓN POSTFIJA: ");
+        System.out.println(postfix.toString()+"\n");
+
         return evaluate(postfix);
     }
 
@@ -125,10 +129,10 @@ public class ShuntingYard {
     }
 
     private static Token applyOperator(Token currentToken, IStack<Token> resultStack) {
-        NumericalValue operand1 = (NumericalValue) resultStack.pop();
-        System.out.println("Se extrajo el numero "+operand1+" de la pila resultante");
         NumericalValue operand2 = (NumericalValue) resultStack.pop();
         System.out.println("Se extrajo el numero "+operand2+" de la pila resultante");
+        NumericalValue operand1 = (NumericalValue) resultStack.pop();
+        System.out.println("Se extrajo el numero "+operand1+" de la pila resultante");
 
 
         // se obtiene resultado de la operación

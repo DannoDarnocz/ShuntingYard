@@ -35,4 +35,12 @@ public class Queue<T> implements IQueue<T> {
         return queueItems.size();
 
     }
+    @Override
+    public String toString(){
+        String str = "";
+        for (T item : queueItems){
+            str+=item.toString() + ", ";
+        }
+        return str;
+    }
 }

@@ -12,8 +12,9 @@ public class Main {
             String expression = scanner.nextLine(); // Reads a full line of text
 
             try {
-                System.out.println("Expresión digitada: ");
+                System.out.println("\n");
                 double result = ShuntingYard.process(expression);
+                 System.out.println("\nRESULTADO: ");
                 System.out.println(result);
             } catch (Exception e) {
                 e.printStackTrace();

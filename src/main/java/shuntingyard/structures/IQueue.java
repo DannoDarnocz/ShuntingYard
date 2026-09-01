@@ -6,6 +6,6 @@ public interface IQueue<T> {
     T peek();                 // Consultar el frente sin quitarlo
     boolean isEmpty();        // Verifica si está vacía
     int size();               // Cantidad de elementos
-
+    String toString();
 
 }
