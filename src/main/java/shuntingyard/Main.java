@@ -4,21 +4,21 @@ import java.util.Scanner;
 import shuntingyard.algorithm.ShuntingYard;
 
 public class Main {
-    public void main() {
+    public static void main(String[] args) {
         while (true) {
             Scanner scanner = new Scanner(System.in);
 
             System.out.print("\nDigite la expresión: ");
-            String expression = scanner.nextLine(); // Reads a full line of text
 
             try {
+                String expression = scanner.nextLine(); // leer la linea
                 System.out.println("\n");
                 double result = ShuntingYard.process(expression);
                  System.out.println("\nRESULTADO: ");
                 System.out.println(result);
 
             } catch (Exception e) {
-                System.out.println("Expresión inválida");
+                System.out.println("Expresión inválida: " + e.getMessage());
             }
 
             // esperar para que no se despapaye la consola
