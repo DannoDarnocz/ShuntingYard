@@ -8,7 +8,7 @@ public class Main {
         while (true) {
             Scanner scanner = new Scanner(System.in);
 
-            System.out.print("Digite la expresión: ");
+            System.out.print("\nDigite la expresión: ");
             String expression = scanner.nextLine(); // Reads a full line of text
 
             try {
@@ -16,8 +16,9 @@ public class Main {
                 double result = ShuntingYard.process(expression);
                  System.out.println("\nRESULTADO: ");
                 System.out.println(result);
+
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("Expresión inválida");
             }
 
             // esperar para que no se despapaye la consola
